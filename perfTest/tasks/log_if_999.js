@@ -1,5 +1,8 @@
-module.exports = ({ id }) => {
-  if (id === 999) {
-    console.log("Found 999!");
-  }
+module.exports = (payload, helpers) => {
+  // console.log('params', helpers)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, 300)
+  })
 };

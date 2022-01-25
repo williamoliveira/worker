@@ -3,9 +3,12 @@ const { execSync, exec: rawExec } = require("child_process");
 const { promisify } = require("util");
 const exec = promisify(rawExec);
 
-const JOB_COUNT = 20000;
-const PARALLELISM = 4;
-const CONCURRENCY = 10;
+const JOB_COUNT = 200;
+const QUEUE_COUNT = 200;
+const PARALLELISM = 3;
+const CONCURRENCY = 50;
+const MAX_POOL_SIZE = 3;
+const POLL_INTERVAL = 10000;
 
 const time = async (cb) => {
   const start = process.hrtime();
@@ -51,20 +54,20 @@ async function main() {
   });
   console.log();
 
-  console.log(`Scheduling ${JOB_COUNT} jobs`);
+  console.log(`Scheduling ${JOB_COUNT*QUEUE_COUNT} jobs`);
   await time(() => {
-    execSync(`node ./init.js ${JOB_COUNT}`, execOptions);
+    execSync(`node ./init.js ${JOB_COUNT} ${QUEUE_COUNT}`, execOptions);
   });
 
   console.log();
   console.log();
-  console.log(`Timing ${JOB_COUNT} job execution...`);
+  console.log(`Timing ${JOB_COUNT*QUEUE_COUNT} job execution...`);
   const dur = await time(async () => {
     const promises = [];
     for (let i = 0; i < PARALLELISM; i++) {
       promises.push(
         exec(
-          `node ../dist/cli.js --once -j ${CONCURRENCY} -m ${CONCURRENCY + 1}`,
+          `node ../dist/cli.js -j ${CONCURRENCY} -m ${MAX_POOL_SIZE} --poll-interval ${POLL_INTERVAL}`,
           execOptions,
         ),
       );
@@ -82,16 +85,16 @@ async function main() {
     });
   });
   console.log(
-    `Jobs per second: ${((1000 * JOB_COUNT) / (dur - startupTime)).toFixed(2)}`,
+    `Jobs per second: ${((1000 * JOB_COUNT*QUEUE_COUNT) / (dur - startupTime)).toFixed(2)}`,
   );
   console.log();
   console.log();
 
-  console.log("Testing latency...");
-  execSync("node ./latencyTest.js", {
-    ...execOptions,
-    stdio: "inherit",
-  });
+  // console.log("Testing latency...");
+  // execSync("node ./latencyTest.js", {
+  //   ...execOptions,
+  //   stdio: "inherit",
+  // });
 }
 
 main().catch((e) => {
