@@ -166,10 +166,9 @@ export function runTaskList(
         });
         const { rows: cancelledJobs } = await pgPool.query(
           `
-          SELECT ${escapedWorkerSchema}.fail_job(job_queues.locked_by, jobs.id, $2)
+          SELECT ${escapedWorkerSchema}.fail_job(jobs.locked_by, jobs.id, $2)
           FROM ${escapedWorkerSchema}.jobs
-          INNER JOIN ${escapedWorkerSchema}.job_queues ON (job_queues.queue_name = jobs.queue_name)
-          WHERE job_queues.locked_by = ANY($1::text[]) AND jobs.id = ANY($3::int[]);
+          WHERE jobs.locked_by = ANY($1::text[]) AND jobs.id = ANY($3::int[]);
         `,
           [workerIds, message, jobsInProgress.map((job) => job.id)],
         );
@@ -202,7 +201,7 @@ export function runTaskList(
   ) => {
     if (!active) {
       // We were released, release this new client and abort
-      releaseClient();
+      releaseClient?.();
       return;
     }
 
