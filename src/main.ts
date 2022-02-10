@@ -269,9 +269,11 @@ export function runTaskList(
     function release() {
       client.removeListener("error", onErrorReleaseClientAndTryAgain);
       client.removeListener("notification", handleNotification);
-      client.query('UNLISTEN "jobs:insert"').catch(() => {
-        /* ignore errors */
-      });
+      if (!options.noListenNotify) {
+        client.query('UNLISTEN "jobs:insert"').catch(() => {
+          /* ignore errors */
+        });
+      }
       releaseClient();
     }
 
@@ -285,10 +287,12 @@ export function runTaskList(
     client.on("notification", handleNotification);
 
     // Subscribe to jobs:insert message
-    client.query('LISTEN "jobs:insert"').then(() => {
-      // Successful listen; reset attempts
-      attempts = 0;
-    }, onErrorReleaseClientAndTryAgain);
+    if (!options.noListenNotify) {
+      client.query('LISTEN "jobs:insert"').then(() => {
+        // Successful listen; reset attempts
+        attempts = 0;
+      }, onErrorReleaseClientAndTryAgain);
+    }
 
     const supportedTaskNames = Object.keys(tasks);
 

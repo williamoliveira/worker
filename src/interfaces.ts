@@ -446,6 +446,12 @@ export interface WorkerPoolOptions extends WorkerSharedOptions {
    * handle graceful shutdown of the worker if the process receives a signal.
    */
   noHandleSignals?: boolean;
+
+  /**
+   * If set true, we won't use LISTEN/NOTIFY feature and only rely on polling
+   * to get new jobs.
+   */
+  noListenNotify?: boolean
 }
 
 /**
