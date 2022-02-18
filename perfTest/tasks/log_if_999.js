@@ -1,8 +1,8 @@
 module.exports = (payload, helpers) => {
   // console.log('params', helpers)
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve()
-    }, 300)
-  })
+  // return new Promise((resolve) => {
+  //   setTimeout(() => {
+  //     resolve()
+  //   }, 300)
+  // })
 };

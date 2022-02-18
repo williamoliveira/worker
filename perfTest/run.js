@@ -3,11 +3,11 @@ const { execSync, exec: rawExec } = require("child_process");
 const { promisify } = require("util");
 const exec = promisify(rawExec);
 
-const JOB_COUNT = 200;
-const QUEUE_COUNT = 200;
+const JOB_COUNT = 1000;
+const QUEUE_COUNT = 100;
 const PARALLELISM = 3;
-const CONCURRENCY = 50;
-const MAX_POOL_SIZE = 3;
+const CONCURRENCY = 100;
+const MAX_POOL_SIZE = 10;
 const POLL_INTERVAL = 10000;
 
 const time = async (cb) => {
@@ -67,7 +67,7 @@ async function main() {
     for (let i = 0; i < PARALLELISM; i++) {
       promises.push(
         exec(
-          `node ../dist/cli.js -j ${CONCURRENCY} -m ${MAX_POOL_SIZE} --poll-interval ${POLL_INTERVAL}`,
+          `node ../dist/cli.js --once -j ${CONCURRENCY} -m ${MAX_POOL_SIZE} --poll-interval ${POLL_INTERVAL}`,
           execOptions,
         ),
       );

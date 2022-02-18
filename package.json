@@ -1,6 +1,6 @@
 {
-  "name": "graphile-worker",
-  "version": "0.12.2",
+  "name": "@williamoliveira/graphile-worker",
+  "version": "1.0.0",
   "description": "Job queue for PostgreSQL",
   "main": "dist/index.js",
   "scripts": {
@@ -14,12 +14,15 @@
     "perfTest": "cd perfTest && node ./run.js",
     "preversion": "grep '^### Pending' RELEASE_NOTES.md && echo \"⚠️ Cannot publish with 'Pending' in RELEASE_NOTES ⚠️\" && exit 1 || true"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/williamoliveira"
+  },
   "bin": {
     "graphile-worker": "./dist/cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/graphile/worker.git"
+    "url": "git+ssh://git@github.com:williamoliveira/worker.git"
   },
   "keywords": [
     "postgresql",
