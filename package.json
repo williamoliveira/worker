@@ -1,6 +1,6 @@
 {
   "name": "@ikatec/graphile-worker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Job queue for PostgreSQL",
   "main": "dist/index.js",
   "scripts": {
